@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Run outputs
+runs/
+results/
+*.log
+*.jsonl
+
+# Trained artifacts produced by a run (the released ones live in weights/)
+*.pt
+!weights/head.pt
+*.pkl
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+hf_cache/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/

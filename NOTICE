@@ -1,0 +1,40 @@
+Pro-Router
+Copyright 2026 Xinyuan Gui, Shaowen Wang, Sheng Sun, Zijian Wang, Zishu Yu,
+Zheming Yang
+
+This product includes software developed for the paper "Pro-Router:
+Token-Aware Progressive Model Routing with Adaptive Edge-Cloud Collaboration
+for Efficient Multimodal LLM Inference".
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+--------------------------------------------------------------------------
+Third-party components
+--------------------------------------------------------------------------
+
+vllm_patch/in_engine_head.patch is a diff against vLLM
+(https://github.com/vllm-project/vllm), licensed under the Apache License,
+Version 2.0. Applying it produces a modified copy of vLLM; that copy remains
+subject to Apache-2.0, including its notice and attribution requirements.
+The patch adds new files and modifies existing ones under vllm/; the upstream
+copyright headers are preserved by the diff.
+
+This project imports, but does not redistribute, vLLM, Ray, PyTorch,
+Transformers, Datasets, scikit-learn, SciPy, NumPy and Pillow. Each is used
+under its own license.
+
+--------------------------------------------------------------------------
+Datasets
+--------------------------------------------------------------------------
+
+No dataset content is redistributed. verifier/bench_mix_manifest.json lists
+dataset-native record identifiers only; verifier/src/build_records.py fetches
+the content from the original sources, each of which carries its own terms.
+
+--------------------------------------------------------------------------
+Model weights
+--------------------------------------------------------------------------
+
+weights/head.pt is a small classifier (67,329 parameters) trained for this
+work. It is derived from features extracted from open-weight models; no model
+weights from those projects are included or redistributed here.

@@ -1,0 +1,1564 @@
+diff --git a/vllm/outputs.py b/vllm/outputs.py
+index 2c71d2afb..a765c4593 100644
+--- a/vllm/outputs.py
++++ b/vllm/outputs.py
+@@ -46,6 +46,34 @@ class CompletionOutput:
+     finish_reason: str | None = None
+     stop_reason: int | str | None = None
+     lora_request: LoRARequest | None = None
++    # in-engine path inline cascade-routing stats. Populated only
++    # when SamplingParams.emit_aggregate_logprob_stats=True at request
++    # submission. Aggregated inline by gpu_model_runner across all
++    # decoded steps:
++    #   mean_logprob:     mean chosen-token logprob across output
++    #   min_logprob:      minimum chosen-token logprob (worst step)
++    #   mean_max_prob:    mean of max-softmax over top-K per step
++    #   neg_mean_entropy: -mean of top-K predictive entropy per step
++    # Each is a single float; None if the request didn't opt in or
++    # generated zero tokens.
++    aggregate_logprob_stats: dict[str, float] | None = None
++    # in-engine path per-token feature sequence. Populated only
++    # when SamplingParams.emit_per_token_feature_seq=True. Each row is
++    # [chosen_lp, max_p, neg_entropy, pos_frac]; outer list length = T
++    # (number of decoded tokens). Consumed directly by the the offline head
++    # per-token gate (attn_pool / transformer_L2) — saves the per-step
++    # Logprob-dict construction the standard `logprobs=K` path pays.
++    per_token_features: list[list[float]] | None = None
++    # in-engine head — in-engine attn_pool gate decision.
++    # Populated only when SamplingParams.in_engine_cascade_head=True and
++    # the engine was booted with VLLM_CASCADE_ATTN_POOL_{CKPT,TAU} env
++    # vars pointing at a trained head + τ table. A dict:
++    #   {"verdict": "SHIP"|"REGEN", "score": float, "tau": float,
++    #    "source": str|None}
++    # Lets engine.generate(...) return BOTH the text AND the routing
++    # decision in a single call — the paper-clean "draft + gate as one
++    # model" architecture. Equivalent to the driver-side gate forward.
++    head_decision: dict | None = None
+ 
+     def finished(self) -> bool:
+         return self.finish_reason is not None
+@@ -58,6 +86,9 @@ class CompletionOutput:
+             f"routed_experts={self.routed_experts}, "
+             f"cumulative_logprob={self.cumulative_logprob}, "
+             f"logprobs={self.logprobs}, "
++            f"aggregate_logprob_stats={self.aggregate_logprob_stats}, "
++            f"per_token_features_len="
++            f"{len(self.per_token_features) if self.per_token_features else 0}, "
+             f"finish_reason={self.finish_reason}, "
+             f"stop_reason={self.stop_reason})"
+         )
+diff --git a/vllm/sampling_params.py b/vllm/sampling_params.py
+index 3a2a04fd7..b2dfbc22e 100644
+--- a/vllm/sampling_params.py
++++ b/vllm/sampling_params.py
+@@ -238,6 +238,37 @@ class SamplingParams(
+     NOTE: GC costs of FlatLogprobs is significantly smaller than
+     list[dict[int, Logprob]]. After enabled, PromptLogprobs and
+     SampleLogprobs would populated as FlatLogprobs."""
++    emit_aggregate_logprob_stats: bool = False
++    """If True, emit per-request aggregate logprob statistics
++    (mean_logprob, min_logprob, mean_max_prob, neg_mean_entropy) in
++    RequestOutput. Computed inline during decoding without serializing
++    per-token logprobs to CPU. Used by in-engine path cascade-
++    routing experiments. Requires `logprobs >= 2` for `mean_max_prob`
++    and `neg_mean_entropy`; with `logprobs == 1` only the chosen-token
++    stats (mean_logprob, min_logprob) are meaningful."""
++    emit_per_token_feature_seq: bool = False
++    """in-engine path — If True, emit per-request `per_token_features` list in
++    CompletionOutput: a [T, 4] array with rows
++    `[chosen_lp, max_p, neg_entropy, pos_frac]` per decoded token. Same
++    feature schema as the offline head attn_pool / transformer_L2. Computed
++    inline during decoding from the sampler's per-step top-K logprobs;
++    avoids per-step Logprob-dict construction + detokenization on the
++    driver. Requires `logprobs >= 2` (mirrors emit_aggregate_logprob_stats);
++    with smaller K, `max_p` and `neg_entropy` are computed over the
++    available top-K only."""
++    in_engine_cascade_head: bool = False
++    """in-engine head — If True AND the engine was booted with env vars
++    VLLM_CASCADE_ATTN_POOL_{CKPT,TAU}, run the loaded attn_pool head on
++    the request's per-token features at end-of-sequence and attach the
++    SHIP/REGEN verdict to CompletionOutput.head_decision. Brings the
++    cascade gate inside the engine — a single engine.generate() call
++    returns both the text AND the routing decision. Implicitly enables
++    emit_per_token_feature_seq."""
++    cascade_source: str | None = None
++    """in-engine head — Optional source/benchmark family identifier used
++    to look up the per-source τ from the loaded tau table when
++    in_engine_cascade_head=True. If None or not in the table, falls back
++    to the global τ."""
+     # NOTE: This parameter is only exposed at the engine level for now.
+     # It is not exposed in the OpenAI API server, as the OpenAI API does
+     # not support returning only a list of token IDs.
+diff --git a/vllm/v1/cascade_lp_classifier.py b/vllm/v1/cascade_lp_classifier.py
+new file mode 100644
+index 000000000..43f552d6b
+--- /dev/null
++++ b/vllm/v1/cascade_lp_classifier.py
+@@ -0,0 +1,623 @@
++"""in-engine path — per-request aggregate logprob accumulator.
++
++Used by the inline cascade-routing decider. When a request opts in via
++`SamplingParams.emit_aggregate_logprob_stats=True`, gpu_model_runner
++updates this accumulator each decode step from the sampler's per-step
++top-K logprob distribution. At request finalization, the 4 final
++scalars land in `CompletionOutput.aggregate_logprob_stats`.
++
++The 4 scalars:
++  mean_logprob:     mean chosen-token logprob across the generation
++  min_logprob:      minimum chosen-token logprob (worst-confidence
++                    single token)
++  mean_max_prob:    mean of max-softmax across decoded steps (over
++                    top-K)
++  neg_mean_entropy: -mean of top-K predictive entropy across steps
++                    (higher = more confident, less entropy)
++
++Same semantics as the existing driver-side aggregation in
++the offline extractor (DraftEngineAsync._drive's logprob stats
++computation), but accumulated inline on the GPU so per-token logprob
++dicts don't need to be serialized to CPU.
++
++Driver-side equivalence test (in the reference tests):
++  same(stats_from_inline_accum,
++       the offline extractor.aggregate_4_from_per_token_logprobs)
++must hold to within fp32 precision over a corpus of test sequences.
++"""
++from __future__ import annotations
++
++import math
++from dataclasses import dataclass
++from typing import TYPE_CHECKING, Any
++
++import torch
++
++if TYPE_CHECKING:
++    from vllm.logprobs import SampleLogprobs
++
++
++@dataclass
++class PerRequestLogprobStats:
++    """One per active request. Trivial memory (5 floats / 1 int)."""
++
++    sum_chosen_logprob: float = 0.0
++    min_chosen_logprob: float = float("inf")
++    sum_max_prob: float = 0.0
++    sum_neg_entropy: float = 0.0   # accumulates -entropy (so larger
++                                    # is more confident)
++    n_steps: int = 0
++
++    def update_from_step(
++        self,
++        chosen_logprob: float,
++        topk_logprobs: torch.Tensor,  # [K] sorted descending
++    ) -> None:
++        """Update from one decode step's outputs."""
++        self.sum_chosen_logprob += chosen_logprob
++        if chosen_logprob < self.min_chosen_logprob:
++            self.min_chosen_logprob = chosen_logprob
++        # max_prob: top-K is sorted desc, so first entry is max
++        max_prob = float(torch.exp(topk_logprobs[0]))
++        self.sum_max_prob += max_prob
++        # top-K entropy: -sum (p/z) log (p/z) where p = exp(logprob)
++        # Renormalize over the top-K to get a proper distribution
++        # (since we truncated the tail). Standard approx for full
++        # predictive entropy.
++        probs = torch.exp(topk_logprobs)
++        z = probs.sum()
++        if float(z) > 0 and topk_logprobs.shape[0] > 1:
++            normalized = probs / z
++            # Skip zeros (shouldn't happen with exp, but be safe).
++            log_p = torch.log(normalized.clamp(min=1e-30))
++            entropy = -float((normalized * log_p).sum())
++            self.sum_neg_entropy += -entropy  # negate so larger = more confident
++        self.n_steps += 1
++
++    def finalize(self) -> dict[str, float] | None:
++        """Read out the 4 aggregate stats. None if no steps."""
++        n = self.n_steps
++        if n == 0:
++            return None
++        return {
++            "mean_logprob": self.sum_chosen_logprob / n,
++            "min_logprob": self.min_chosen_logprob,
++            "mean_max_prob": self.sum_max_prob / n,
++            "neg_mean_entropy": self.sum_neg_entropy / n,
++        }
++
++
++class LogprobStatsAccumulator:
++    """Per-engine registry of per-request accumulators.
++
++    Lifecycle:
++      - register_request(req_id): called when a request enters the
++        running set with emit_aggregate_logprob_stats=True.
++      - update(req_id, chosen_lp, topk_lp): called each decode step
++        from gpu_model_runner._bookkeeping_sync.
++      - finalize(req_id): called when request finishes; returns the
++        4-stat dict to attach to CompletionOutput.
++
++    Memory: 5 floats + 1 int per active request. Negligible.
++    """
++
++    def __init__(self) -> None:
++        self._state: dict[str, PerRequestLogprobStats] = {}
++
++    def register_request(self, req_id: str) -> None:
++        self._state.setdefault(req_id, PerRequestLogprobStats())
++
++    def has_request(self, req_id: str) -> bool:
++        return req_id in self._state
++
++    def update(
++        self,
++        req_id: str,
++        chosen_logprob: float,
++        topk_logprobs: torch.Tensor,
++    ) -> None:
++        st = self._state.get(req_id)
++        if st is None:
++            # Request didn't opt in (or already finalized); skip.
++            return
++        st.update_from_step(chosen_logprob, topk_logprobs)
++
++    def finalize(self, req_id: str) -> dict[str, float] | None:
++        st = self._state.pop(req_id, None)
++        if st is None:
++            return None
++        return st.finalize()
++
++
++# ---------------------------------------------------------------------
++# in-engine path — per-token feature seq accumulator.
++#
++# Extension of the aggregate path: instead of summing per-step features
++# into 5 scalars, store one row of [chosen_lp, max_p, neg_entropy] per
++# decode step. At finalization, the driver tacks on pos_frac (= (i+1)/T)
++# and returns the [T, 4] feature array to be consumed directly by the
++# scheduler-side per-token gate (attn_pool / transformer_L2 in the offline head
++# module). Saves the per-step Logprob dict construction + driver-side
++# detokenization that the standard `logprobs=K` path pays.
++# ---------------------------------------------------------------------
++
++@dataclass
++class PerRequestFeatureSeq:
++    """One per active request. Per-step rows of [chosen_lp, max_p,
++    neg_entropy] (3 floats). pos_frac is added at finalize time."""
++
++    chosen_lp: list[float] | None = None
++    max_p: list[float] | None = None
++    neg_entropy: list[float] | None = None
++
++    def __post_init__(self) -> None:
++        if self.chosen_lp is None:
++            self.chosen_lp = []
++        if self.max_p is None:
++            self.max_p = []
++        if self.neg_entropy is None:
++            self.neg_entropy = []
++
++    def update_from_step(
++        self,
++        chosen_logprob: float,
++        topk_logprobs: torch.Tensor,  # [K] sorted descending
++    ) -> None:
++        """Append one row's (chosen_lp, max_p, neg_entropy). pos_frac
++        is computed in finalize() since it depends on the final T."""
++        self.chosen_lp.append(float(chosen_logprob))
++        # max_prob: top-K is sorted desc; first entry is max
++        self.max_p.append(float(torch.exp(topk_logprobs[0])))
++        # top-K entropy: same math as PerRequestLogprobStats above
++        probs = torch.exp(topk_logprobs)
++        z = probs.sum()
++        if float(z) > 0 and topk_logprobs.shape[0] > 1:
++            normalized = probs / z
++            log_p = torch.log(normalized.clamp(min=1e-30))
++            entropy = -float((normalized * log_p).sum())
++            self.neg_entropy.append(-entropy)
++        else:
++            self.neg_entropy.append(0.0)
++
++    def finalize(self) -> list[list[float]] | None:
++        """Return [T, 4] = [[chosen_lp, max_p, neg_entropy, pos_frac]]
++        per row. None if no steps recorded."""
++        T = len(self.chosen_lp)
++        if T == 0:
++            return None
++        out = []
++        for i in range(T):
++            pos_frac = (i + 1) / T
++            out.append([
++                self.chosen_lp[i],
++                self.max_p[i],
++                self.neg_entropy[i],
++                pos_frac,
++            ])
++        return out
++
++
++class FeatureSeqAccumulator:
++    """Per-engine registry of per-request feature-seq accumulators.
++
++    Same lifecycle as LogprobStatsAccumulator (register/update/finalize)
++    but stores per-step rows instead of running sums. Memory: ~3 floats
++    per decoded token per active request — for 30 concurrent requests
++    × 200 tokens = ~3 KB total, negligible.
++    """
++
++    def __init__(self) -> None:
++        self._state: dict[str, PerRequestFeatureSeq] = {}
++
++    def register_request(self, req_id: str) -> None:
++        self._state.setdefault(req_id, PerRequestFeatureSeq())
++
++    def has_request(self, req_id: str) -> bool:
++        return req_id in self._state
++
++    def update(
++        self,
++        req_id: str,
++        chosen_logprob: float,
++        topk_logprobs: torch.Tensor,
++    ) -> None:
++        st = self._state.get(req_id)
++        if st is None:
++            return
++        st.update_from_step(chosen_logprob, topk_logprobs)
++
++    def finalize(self, req_id: str) -> list[list[float]] | None:
++        st = self._state.pop(req_id, None)
++        if st is None:
++            return None
++        return st.finalize()
++
++
++def compute_feature_seq_from_sample_logprobs(
++    logprobs: "SampleLogprobs",
++    token_ids: list[int],
++) -> list[list[float]] | None:
++    """Driver-side reference implementation of the feature seq.
++
++    Same math as PerRequestFeatureSeq + pos_frac. Used as a numerical
++    reference for validating the inline accumulator and as a fallback
++    when the GPU side didn't produce features (e.g. partial generation).
++    """
++    if not logprobs or not token_ids:
++        return None
++    rows: list[list[float]] = []
++    for pos, lp_dict in enumerate(logprobs):
++        if lp_dict is None or pos >= len(token_ids):
++            continue
++        chosen_tid = token_ids[pos]
++        chosen = lp_dict.get(chosen_tid)
++        if chosen is None:
++            continue
++        chosen_lp = float(chosen.logprob)
++        topk_lps = sorted(
++            (float(v.logprob) for v in lp_dict.values()), reverse=True,
++        )
++        if not topk_lps:
++            continue
++        max_p = math.exp(topk_lps[0])
++        neg_ent = 0.0
++        if len(topk_lps) > 1:
++            probs = [math.exp(lp) for lp in topk_lps]
++            z = sum(probs)
++            if z > 0:
++                normalized = [p / z for p in probs]
++                entropy = -sum(
++                    p * math.log(max(p, 1e-30)) for p in normalized
++                )
++                neg_ent = -entropy
++        rows.append([chosen_lp, max_p, neg_ent, 0.0])  # pos_frac filled below
++    T = len(rows)
++    if T == 0:
++        return None
++    for i in range(T):
++        rows[i][3] = (i + 1) / T
++    return rows
++
++
++# ---------------------------------------------------------------------
++# Reference sketch of the per-step hook, kept for readability only.
++# This function is NOT called anywhere. The working implementation
++# lives in vllm/v1/worker/gpu_model_runner.py, added by this same
++# patch as GPUModelRunner._update_lp_stats_accumulator_step and
++# ._update_feature_seq_accumulator_step, both invoked from
++# _bookkeeping_sync. Read those for the real behaviour.
++# ---------------------------------------------------------------------
++
++def update_accumulator_for_step(
++    accumulator: LogprobStatsAccumulator,
++    req_ids: list[str],
++    opted_in_mask: list[bool],
++    sampler_output_logprobs: Any,  # vLLM SamplerOutput.logprobs_tensors
++) -> None:
++    """The contract the real hooks implement, in three steps.
++
++    Called once per decode step, straight after the sampler:
++
++      1. Determine for each request whether it opted in (from the
++         input_batch flag tracked since request submission).
++      2. For each opted-in request, extract the chosen-token logprob
++         and the top-K logprobs at that step's position in the
++         LogprobsTensors flat layout (indexed by
++         req_idx * max_gen_len + step_idx).
++      3. Call accumulator.update(req_id, chosen_lp, topk_lp).
++    """
++    raise NotImplementedError(
++        "Illustrative only -- see GPUModelRunner."
++        "_update_lp_stats_accumulator_step for the live path."
++    )
++
++
++# ---------------------------------------------------------------------
++# Driver-side reference implementation.
++#
++# Computes the same 4 stats as the inline accumulator, but from the
++# already-serialized SampleLogprobs (per-position dict[token_id ->
++# Logprob]). Same math, same outputs — just slower because it runs
++# after CPU serialization rather than inline.
++#
++# Two purposes:
++#   1. Numerical reference for validating the inline accumulator once
++#      gpu_model_runner integration lands.
++#   2. Lets in-engine path cascade-routing exercise the new
++#      SamplingParams + CompletionOutput field today, before the full
++#      inline patch is wired up.
++# ---------------------------------------------------------------------
++
++def compute_aggregate_from_sample_logprobs(
++    logprobs: "SampleLogprobs",
++    token_ids: list[int],
++) -> dict[str, float] | None:
++    """Reference aggregator. Same math as PerRequestLogprobStats.
++
++    logprobs[i] is dict[token_id -> Logprob] for the i-th generated
++    position. token_ids[i] is the chosen token at that position.
++    """
++    if not logprobs or not token_ids:
++        return None
++
++    sum_chosen_lp = 0.0
++    min_chosen_lp = float("inf")
++    sum_max_prob = 0.0
++    sum_neg_entropy = 0.0
++    n_steps = 0
++
++    for pos, lp_dict in enumerate(logprobs):
++        if lp_dict is None or pos >= len(token_ids):
++            continue
++        chosen_tid = token_ids[pos]
++        chosen = lp_dict.get(chosen_tid)
++        if chosen is None:
++            continue
++        chosen_lp = float(chosen.logprob)
++        sum_chosen_lp += chosen_lp
++        if chosen_lp < min_chosen_lp:
++            min_chosen_lp = chosen_lp
++
++        # top-K logprobs at this position, sorted desc
++        topk_lps = sorted(
++            (float(v.logprob) for v in lp_dict.values()), reverse=True,
++        )
++        if not topk_lps:
++            continue
++        # mean_max_prob: top-1 softmax prob
++        sum_max_prob += math.exp(topk_lps[0])
++
++        # top-K entropy: renormalize over top-K
++        if len(topk_lps) > 1:
++            probs = [math.exp(lp) for lp in topk_lps]
++            z = sum(probs)
++            if z > 0:
++                normalized = [p / z for p in probs]
++                entropy = -sum(
++                    p * math.log(max(p, 1e-30)) for p in normalized
++                )
++                sum_neg_entropy += -entropy
++
++        n_steps += 1
++
++    if n_steps == 0:
++        return None
++    return {
++        "mean_logprob": sum_chosen_lp / n_steps,
++        "min_logprob": min_chosen_lp,
++        "mean_max_prob": sum_max_prob / n_steps,
++        "neg_mean_entropy": sum_neg_entropy / n_steps,
++    }
++
++
++# ============================================================
++# in-engine head / in-engine head — in-engine cascade head forward.
++# Loaded once per OutputProcessor lifetime from env vars; fired
++# at end-of-sequence from RequestState._new_completion_output.
++# Brings the gate inside the engine so a single engine.generate
++# call returns both the text and the SHIP/REGEN decision —
++# eliminates the "engine emits logprobs → driver-side gate"
++# split that the paper draft would otherwise have to explain.
++#
++# Arch dispatch (in-engine head): the same env-var path loads any of the
++# trained SeqDataset architectures from
++# the offline head module. Arch is read from
++# ckpt["hparams"]["arch"]:
++#   AttnPool       → _InEngineAttnPool      (~449 params)
++#   TransformerSeq → _InEngineTransformerL2 (in-engine head, ~67k params, L=2)
++# Both mirror the driver-side module bit-exactly so loaded weights
++# produce identical scores. Same `decide(feature_seq, source)` →
++# CompletionOutput.head_decision interface either way.
++# ============================================================
++
++
++class _InEngineAttnPool(torch.nn.Module):
++    """Mirror of the offline head module
++    AttnPool. Replicated here so vLLM doesn't need to import the
++    module at engine init."""
++
++    def __init__(self, n_features: int = 4, d_model: int = 64):
++        super().__init__()
++        self.proj = torch.nn.Linear(n_features, d_model)
++        self.query = torch.nn.Parameter(torch.randn(d_model))
++        self.classifier = torch.nn.Linear(d_model, 1)
++
++    def forward(self, x: torch.Tensor, lens: torch.Tensor) -> torch.Tensor:
++        h = self.proj(x)
++        scores = (h * self.query).sum(dim=-1)
++        T = scores.shape[1]
++        mask = (torch.arange(T, device=x.device).unsqueeze(0)
++                < lens.to(x.device).unsqueeze(1))
++        scores = scores.masked_fill(~mask, -1e9)
++        attn = torch.nn.functional.softmax(scores, dim=1).unsqueeze(-1)
++        pooled = (h * attn).sum(dim=1)
++        return self.classifier(pooled).squeeze(-1)
++
++
++class _InEnginePositionalEncoding(torch.nn.Module):
++    """Mirror of TransformerSeq's PositionalEncoding (offline head).
++    Registers the same `pe` buffer so a TransformerSeq state_dict
++    loads with strict=True."""
++
++    def __init__(self, d_model: int, max_len: int = 600):
++        super().__init__()
++        pe = torch.zeros(max_len, d_model)
++        position = torch.arange(0, max_len, dtype=torch.float).unsqueeze(1)
++        div = torch.exp(torch.arange(0, d_model, 2).float()
++                        * (-math.log(10000.0) / d_model))
++        pe[:, 0::2] = torch.sin(position * div)
++        pe[:, 1::2] = torch.cos(position * div)
++        self.register_buffer("pe", pe)
++
++    def forward(self, x: torch.Tensor) -> torch.Tensor:
++        return x + self.pe[: x.shape[1]].unsqueeze(0)
++
++
++class _InEngineTransformerL2(torch.nn.Module):
++    """Mirror of the offline head module
++    TransformerSeq. Same module names (`proj`, `pe`, `encoder`,
++    `classifier`) and same torch.nn building blocks so loaded weights
++    produce bit-identical scores to the driver-side gate.
++
++    Default hparams = the offline head transformer_L2:
++      n_features=4, d_model=64, n_heads=4, n_layers=2, d_ff=128.
++    """
++
++    def __init__(self, n_features: int = 4, d_model: int = 64,
++                 n_heads: int = 4, n_layers: int = 2,
++                 d_ff: int = 128, max_len: int = 600):
++        super().__init__()
++        self.proj = torch.nn.Linear(n_features, d_model)
++        self.pe = _InEnginePositionalEncoding(d_model, max_len=max_len)
++        enc = torch.nn.TransformerEncoderLayer(
++            d_model=d_model, nhead=n_heads, dim_feedforward=d_ff,
++            dropout=0.0, batch_first=True, activation="gelu",
++        )
++        self.encoder = torch.nn.TransformerEncoder(enc, num_layers=n_layers)
++        self.classifier = torch.nn.Linear(d_model, 1)
++
++    def forward(self, x: torch.Tensor, lens: torch.Tensor) -> torch.Tensor:
++        B, T, _ = x.shape
++        mask = torch.arange(T, device=x.device).unsqueeze(0) >= \
++               lens.to(x.device).unsqueeze(1)
++        h = self.proj(x)
++        h = self.pe(h)
++        h = self.encoder(h, src_key_padding_mask=mask)
++        not_mask = (~mask).float().unsqueeze(-1)
++        pooled = (h * not_mask).sum(dim=1) / not_mask.sum(dim=1).clamp(min=1)
++        return self.classifier(pooled).squeeze(-1)
++
++
++def _build_head_module(hp: dict[str, Any]) -> torch.nn.Module:
++    """Arch dispatch from ckpt["hparams"]. Keep this in sync with
++    the offline head module's model_specs."""
++    arch = hp.get("arch")
++    if arch == "AttnPool":
++        return _InEngineAttnPool(
++            n_features=int(hp.get("n_features", 4)),
++            d_model=int(hp.get("d_model", 64)),
++        )
++    if arch == "TransformerSeq":
++        return _InEngineTransformerL2(
++            n_features=int(hp.get("n_features", 4)),
++            d_model=int(hp.get("d_model", 64)),
++            n_heads=int(hp.get("n_heads", 4)),
++            n_layers=int(hp.get("n_layers", 2)),
++            d_ff=int(hp.get("d_ff", 128)),
++            max_len=int(hp.get("max_len", 600)),
++        )
++    raise ValueError(
++        f"InEngineCascadeHead: unsupported arch={arch!r}; expected "
++        f"'AttnPool' or 'TransformerSeq' (see "
++        f"the offline head module)."
++    )
++
++
++class InEngineCascadeHead:
++    """In-engine cascade gate. Loaded once per OutputProcessor; decides
++    SHIP/REGEN from the per-token feature seq at end of sequence.
++
++    Decision: sigmoid(model(feature_seq)) >= τ[source] → SHIP else REGEN.
++    Same arithmetic as prorouter/gate.py:transformer_seq_gate.
++
++    Arch is dispatched from ckpt["hparams"]["arch"]; see
++    `_build_head_module`. The same env-var path serves both attn_pool
++    (attn_pool) and transformer_L2 (in-engine head).
++    """
++
++    def __init__(self, ckpt_path: str, tau_table_path: str) -> None:
++        import json as _json
++        ckpt = torch.load(ckpt_path, weights_only=False,
++                          map_location="cpu")
++        hp = ckpt["hparams"]
++        self.arch = hp.get("arch")
++        self.model = _build_head_module(hp)
++        self.model.load_state_dict(ckpt["state_dict"])
++        self.model.eval()
++        with open(tau_table_path) as _f:
++            self.tau_table = _json.load(_f)
++        self.global_tau = float(
++            (self.tau_table.get("global") or {}).get("tau", 0.5)
++        )
++        self.per_source = self.tau_table.get("per_source", {}) or {}
++        # Warmup so first inference doesn't pay PyTorch dispatch JIT cost
++        with torch.inference_mode():
++            _ = self.model(
++                torch.zeros(1, 8, int(hp.get("n_features", 4))),
++                torch.tensor([8]),
++            )
++
++    def tau_for(self, source: str | None) -> float:
++        if source and source in self.per_source:
++            return float(
++                self.per_source[source].get("best", {}).get(
++                    "tau", self.global_tau,
++                )
++            )
++        return self.global_tau
++
++    def decide(
++        self,
++        feature_seq: list[list[float]] | None,
++        source: str | None,
++    ) -> dict[str, Any] | None:
++        if not feature_seq:
++            return {"verdict": "REGEN", "score": None,
++                    "tau": self.global_tau, "reason": "no_features"}
++        x = torch.tensor([feature_seq], dtype=torch.float32)
++        lens = torch.tensor([x.shape[1]])
++        with torch.inference_mode():
++            logit = self.model(x, lens)
++        score = float(torch.sigmoid(logit).item())
++        tau = self.tau_for(source)
++        return {
++            "verdict": "SHIP" if score >= tau else "REGEN",
++            "score": score,
++            "tau": tau,
++            "source": source,
++        }
++
++
++# Back-compat alias: existing callers (output_processor.py, the
++# bench harness) import / log this name from earlier revisions.
++# The class is now arch-dispatched, so the name no longer literally
++# means "attn_pool only" — it's the cascade head, arch read from
++# the ckpt. Renaming the env vars would break the bench wiring.
++InEngineAttnPoolHead = InEngineCascadeHead
++
++
++# Singleton — loaded on first access, reused for all requests in the
++# engine's lifetime. Env vars (unchanged from earlier revisions for
++# backwards compat with the bench wiring; arch is read from
++# the ckpt):
++#   VLLM_CASCADE_ATTN_POOL_CKPT  — path to head .pt (AttnPool OR
++#                                  TransformerSeq state_dict + hparams)
++#   VLLM_CASCADE_ATTN_POOL_TAU   — path to tau-table .json
++_HEAD_SINGLETON: "InEngineCascadeHead | None" = None
++_HEAD_INIT_TRIED: bool = False
++
++
++def get_in_engine_head() -> "InEngineCascadeHead | None":
++    global _HEAD_SINGLETON, _HEAD_INIT_TRIED
++    if _HEAD_SINGLETON is not None or _HEAD_INIT_TRIED:
++        return _HEAD_SINGLETON
++    _HEAD_INIT_TRIED = True
++    import os as _os
++    import logging as _logging
++    ckpt = _os.environ.get("VLLM_CASCADE_ATTN_POOL_CKPT")
++    tau = _os.environ.get("VLLM_CASCADE_ATTN_POOL_TAU")
++    if not ckpt or not tau:
++        return None
++    try:
++        _HEAD_SINGLETON = InEngineCascadeHead(ckpt, tau)
++        _logging.getLogger(__name__).info(
++            "[in-engine head] Loaded in-engine cascade head arch=%s "
++            "from ckpt=%s tau=%s",
++            _HEAD_SINGLETON.arch, ckpt, tau,
++        )
++    except Exception as e:  # noqa: BLE001
++        _logging.getLogger(__name__).warning(
++            "[in-engine head] Failed to load in-engine head: %s", e,
++        )
++        _HEAD_SINGLETON = None
++    return _HEAD_SINGLETON
+diff --git a/vllm/v1/core/sched/scheduler.py b/vllm/v1/core/sched/scheduler.py
+index fe524ccac..e61eae75a 100644
+--- a/vllm/v1/core/sched/scheduler.py
++++ b/vllm/v1/core/sched/scheduler.py
+@@ -1307,6 +1307,14 @@ class Scheduler(SchedulerInterface):
+         sampled_token_ids = model_runner_output.sampled_token_ids
+         logprobs = model_runner_output.logprobs
+         prompt_logprobs_dict = model_runner_output.prompt_logprobs_dict
++        # in-engine path inline cascade-routing accumulator state.
++        aggregate_lp_stats_running = (
++            model_runner_output.aggregate_lp_stats_running
++        )
++        # in-engine path per-token feature seq accumulator state.
++        per_token_feature_seq_running = (
++            model_runner_output.per_token_feature_seq_running
++        )
+         num_scheduled_tokens = scheduler_output.num_scheduled_tokens
+         pooler_outputs = model_runner_output.pooler_output
+         num_nans_in_logits = model_runner_output.num_nans_in_logits
+@@ -1454,6 +1462,19 @@ class Scheduler(SchedulerInterface):
+                 or kv_transfer_params
+                 or stopped
+             ):
++                # in-engine path: include accumulator state if opted in.
++                agg_lp_running = (
++                    aggregate_lp_stats_running.get(req_id)
++                    if aggregate_lp_stats_running is not None
++                    else None
++                )
++                # in-engine path: include per-token feature seq if
++                # opted in.
++                ptf_seq_running = (
++                    per_token_feature_seq_running.get(req_id)
++                    if per_token_feature_seq_running is not None
++                    else None
++                )
+                 # Add EngineCoreOutput for this Request.
+                 outputs[request.client_index].append(
+                     EngineCoreOutput(
+@@ -1471,6 +1492,8 @@ class Scheduler(SchedulerInterface):
+                         num_external_computed_tokens=request.num_external_computed_tokens,
+                         routed_experts=routed_experts,
+                         num_nans_in_logits=request.num_nans_in_logits,
++                        aggregate_lp_stats_running=agg_lp_running,
++                        per_token_feature_seq_running=ptf_seq_running,
+                     )
+                 )
+             else:
+diff --git a/vllm/v1/engine/__init__.py b/vllm/v1/engine/__init__.py
+index 114d45fc4..39ff76e2d 100644
+--- a/vllm/v1/engine/__init__.py
++++ b/vllm/v1/engine/__init__.py
+@@ -165,6 +165,21 @@ class EngineCoreOutput(
+     # The number of NaNs in logits.
+     # A value greater than 0 indicates that the output is corrupted.
+     num_nans_in_logits: int = 0
++    # in-engine path inline cascade-routing stats. Populated per
++    # step when SamplingParams.emit_aggregate_logprob_stats=True at
++    # request submission. Layout (5 floats):
++    #   (sum_chosen_lp, min_chosen_lp, sum_max_prob,
++    #    sum_neg_entropy, n_steps)
++    # Output processor accumulates running totals across steps and
++    # finalizes (divides by n_steps) at request completion.
++    aggregate_lp_stats_running: tuple[float, float, float, float, int] | None = None
++    # in-engine path per-token feature seq (per-step rows of
++    # [chosen_lp, max_p, neg_entropy]). Output processor accumulates
++    # across steps (extends the 3 lists) and finalizes (adds pos_frac
++    # and re-shapes to [T, 4]) at request completion.
++    per_token_feature_seq_running: tuple[
++        list[float], list[float], list[float]
++    ] | None = None
+ 
+     @property
+     def finished(self) -> bool:
+diff --git a/vllm/v1/engine/output_processor.py b/vllm/v1/engine/output_processor.py
+index f9e965092..beae346a7 100644
+--- a/vllm/v1/engine/output_processor.py
++++ b/vllm/v1/engine/output_processor.py
+@@ -27,6 +27,9 @@ from vllm.tracing import (
+     instrument_manual,
+ )
+ from vllm.utils import length_from_prompt_token_ids_or_embeds
++from vllm.v1.cascade_lp_classifier import (
++    compute_aggregate_from_sample_logprobs,
++)
+ from vllm.v1.engine import EngineCoreOutput, EngineCoreRequest, FinishReason
+ from vllm.v1.engine.detokenizer import IncrementalDetokenizer
+ from vllm.v1.engine.logprobs import LogprobsProcessor
+@@ -170,6 +173,25 @@ class RequestState:
+         self.n = n
+         self.temperature = temperature
+         self.is_prefilling = True
++        # in-engine path cascade-routing opt-in flag. Set by
++        # from_new_request when SamplingParams.emit_aggregate_logprob_stats
++        # is True. When the request finishes, the 4 aggregate stats are
++        # computed from the per-token logprobs and attached to
++        # CompletionOutput.aggregate_logprob_stats. Driver-side reference
++        # implementation — the truly-inline accumulator (skipping per-
++        # token CPU serialization) is the follow-up patch described in
++        # the package README.
++        self.emit_aggregate_logprob_stats = False
++        # in-engine path — per-token feature seq opt-in flag.
++        # When set, gpu_model_runner emits per-step rows of
++        # [chosen_lp, max_p, neg_entropy]; we extend the 3 lists across
++        # steps and finalize to [T, 4] (with pos_frac) at request end.
++        self.emit_per_token_feature_seq = False
++        # in-engine head — in-engine cascade head opt-in.
++        # Set by from_new_request when SamplingParams.in_engine_cascade_head
++        # is True. cascade_source is plumbed for per-source τ lookup.
++        self.in_engine_cascade_head = False
++        self.cascade_source: str | None = None
+         self.queue = queue
+         self.num_cached_tokens = 0
+ 
+@@ -243,7 +265,7 @@ class RequestState:
+             output_kind = request.pooling_params.output_kind
+ 
+         assert request.external_req_id is not None
+-        return cls(
++        state = cls(
+             request_id=request.request_id,
+             external_req_id=request.external_req_id,
+             parent_req=parent_req,
+@@ -265,6 +287,45 @@ class RequestState:
+             stream_interval=stream_interval,
+             stream_input=request.resumable,
+         )
++        # in-engine path opt-in.
++        if (
++            request.sampling_params is not None
++            and getattr(
++                request.sampling_params, "emit_aggregate_logprob_stats", False,
++            )
++        ):
++            state.emit_aggregate_logprob_stats = True
++        # Running accumulator state from gpu_model_runner; populated
++        # only when the inline (GPU-side) path emits it. Driver-side
++        # reference is used as fallback if this stays None.
++        state.aggregate_lp_stats_running = None
++        # in-engine path — per-token feature seq opt-in.
++        if (
++            request.sampling_params is not None
++            and getattr(
++                request.sampling_params, "emit_per_token_feature_seq", False,
++            )
++        ):
++            state.emit_per_token_feature_seq = True
++        # Running per-step rows from gpu_model_runner; three parallel
++        # lists (chosen_lp, max_p, neg_entropy) that we extend across
++        # steps and reshape to [T, 4] at finalize.
++        state.per_token_feature_seq_running = None
++        # in-engine head — in-engine cascade head opt-in.
++        # Setting in_engine_cascade_head=True implicitly enables
++        # emit_per_token_feature_seq (the head consumes that signal).
++        if (
++            request.sampling_params is not None
++            and getattr(
++                request.sampling_params, "in_engine_cascade_head", False,
++            )
++        ):
++            state.in_engine_cascade_head = True
++            state.emit_per_token_feature_seq = True
++            state.cascade_source = getattr(
++                request.sampling_params, "cascade_source", None,
++            )
++        return state
+ 
+     def make_request_output(
+         self,
+@@ -395,6 +456,82 @@ class RequestState:
+         if delta and logprobs:
+             logprobs = logprobs[-len(token_ids) :]
+ 
++        # in-engine path cascade-routing aggregate stats. Two
++        # paths:
++        # (1) inline: gpu_model_runner accumulated per-step. We
++        #     received running totals via aggregate_lp_stats_running;
++        #     just divide-by-n_steps at completion.
++        # (2) driver-side fallback: compute from the already-
++        #     serialized SampleLogprobs (same math, slower path).
++        aggregate_logprob_stats = None
++        if finished and self.emit_aggregate_logprob_stats:
++            running = self.aggregate_lp_stats_running
++            if running is not None:
++                sum_lp, min_lp, sum_max_p, sum_neg_ent, n = running
++                if n > 0:
++                    aggregate_logprob_stats = {
++                        "mean_logprob": sum_lp / n,
++                        "min_logprob": min_lp,
++                        "mean_max_prob": sum_max_p / n,
++                        "neg_mean_entropy": sum_neg_ent / n,
++                    }
++            if aggregate_logprob_stats is None:
++                full_logprobs = self.logprobs_processor.logprobs
++                full_token_ids = self.detokenizer.output_token_ids
++                aggregate_logprob_stats = compute_aggregate_from_sample_logprobs(
++                    full_logprobs, list(full_token_ids),
++                )
++
++        # in-engine path per-token feature seq. Same two-path
++        # design as the aggregate above:
++        # (1) inline: extend the (chosen_lp, max_p, neg_entropy) triple
++        #     of lists across steps; at finalize, tack on pos_frac and
++        #     reshape to [T, 4].
++        # (2) driver-side fallback: compute from SampleLogprobs.
++        per_token_features = None
++        if finished and self.emit_per_token_feature_seq:
++            running = self.per_token_feature_seq_running
++            if running is not None:
++                chosen_lp_list, max_p_list, neg_ent_list = running
++                T = len(chosen_lp_list)
++                if T > 0:
++                    per_token_features = [
++                        [
++                            chosen_lp_list[i],
++                            max_p_list[i],
++                            neg_ent_list[i],
++                            (i + 1) / T,
++                        ]
++                        for i in range(T)
++                    ]
++            if per_token_features is None:
++                from vllm.v1.cascade_lp_classifier import (
++                    compute_feature_seq_from_sample_logprobs,
++                )
++                full_logprobs = self.logprobs_processor.logprobs
++                full_token_ids = self.detokenizer.output_token_ids
++                per_token_features = compute_feature_seq_from_sample_logprobs(
++                    full_logprobs, list(full_token_ids),
++                )
++
++        # in-engine head — in-engine cascade gate forward.
++        # When the request opted in AND the engine was booted with the
++        # head's env-var ckpts, run attn_pool on the per-token features
++        # here and attach the SHIP/REGEN verdict. Single engine call
++        # returns text AND routing decision.
++        head_decision = None
++        if (
++            finished
++            and self.in_engine_cascade_head
++            and per_token_features is not None
++        ):
++            from vllm.v1.cascade_lp_classifier import get_in_engine_head
++            head = get_in_engine_head()
++            if head is not None:
++                head_decision = head.decide(
++                    per_token_features, self.cascade_source,
++                )
++
+         return CompletionOutput(
+             index=self.request_index,
+             text=text,
+@@ -404,6 +541,9 @@ class RequestState:
+             cumulative_logprob=self.logprobs_processor.cumulative_logprob,
+             finish_reason=str(finish_reason) if finished else None,
+             stop_reason=stop_reason if finished else None,
++            aggregate_logprob_stats=aggregate_logprob_stats,
++            per_token_features=per_token_features,
++            head_decision=head_decision,
+         )
+ 
+     def _new_pooling_output(self, pooling_output: torch.Tensor) -> PoolingOutput:
+@@ -620,6 +760,22 @@ class OutputProcessor:
+             req_state.num_cached_tokens = engine_core_output.num_cached_tokens
+             req_state.is_prefilling = False
+ 
++            # in-engine path: stash latest running accumulator
++            # state for opted-in requests. Finalized at completion in
++            # _new_completion_output.
++            if engine_core_output.aggregate_lp_stats_running is not None:
++                req_state.aggregate_lp_stats_running = (
++                    engine_core_output.aggregate_lp_stats_running
++                )
++
++            # in-engine path: stash latest per-token feature seq
++            # running state. Lists of length = current T; finalized at
++            # completion (tack on pos_frac, reshape to [T, 4]).
++            if engine_core_output.per_token_feature_seq_running is not None:
++                req_state.per_token_feature_seq_running = (
++                    engine_core_output.per_token_feature_seq_running
++                )
++
+             if pooling_output is None:
+                 assert req_state.detokenizer is not None
+                 assert req_state.logprobs_processor is not None
+diff --git a/vllm/v1/outputs.py b/vllm/v1/outputs.py
+index 8eb58de4f..8bf484e53 100644
+--- a/vllm/v1/outputs.py
++++ b/vllm/v1/outputs.py
+@@ -123,6 +123,11 @@ class SamplerOutput:
+     # PLACEHOLDER_TOKEN_ID (-1 by default) is used for padding.
+     sampled_token_ids: torch.Tensor
+     logprobs_tensors: LogprobsTensors | None
++    # in-engine path — per-step feature row computed
++    # inline from log_softmax(logits). Shape [num_reqs, 3]:
++    # (chosen_lp, max_p, neg_entropy) per row. None when no request
++    # opted in via SamplingParams.emit_per_token_feature_seq.
++    feature_seq_tensor: torch.Tensor | None = None
+ 
+ 
+ T = TypeVar("T")
+@@ -250,6 +255,29 @@ class ModelRunnerOutput:
+     # req_id -> num_nans_in_logits
+     num_nans_in_logits: dict[str, int] | None = None
+ 
++    # in-engine path inline cascade-routing accumulator state.
++    # req_id -> (sum_chosen_lp, min_chosen_lp, sum_max_prob,
++    #            sum_neg_entropy, n_steps)
++    # Populated by gpu_model_runner each step for requests that opted
++    # in via SamplingParams.emit_aggregate_logprob_stats. The scheduler
++    # plumbs these through EngineCoreOutput.aggregate_lp_stats_running;
++    # output_processor finalizes (divide-by-n_steps) at request
++    # completion. Same 4 final stats as the driver-side reference.
++    aggregate_lp_stats_running: (
++        dict[str, tuple[float, float, float, float, int]] | None
++    ) = None
++
++    # in-engine path per-token feature seq accumulator state.
++    # req_id -> (chosen_lp_list, max_p_list, neg_entropy_list)
++    # Three parallel lists of floats with length = number of decoded
++    # tokens for this request. Populated by gpu_model_runner per step;
++    # the scheduler plumbs them through EngineCoreOutput; the engine
++    # output processor tacks on pos_frac and emits the [T, 4] list-of-
++    # list in CompletionOutput.per_token_features.
++    per_token_feature_seq_running: (
++        dict[str, tuple[list[float], list[float], list[float]]] | None
++    ) = None
++
+     # information related to cudagraph execution
+     cudagraph_stats: CUDAGraphStat | None = None
+ 
+diff --git a/vllm/v1/sample/metadata.py b/vllm/v1/sample/metadata.py
+index b1101b1b2..cb2b40da2 100644
+--- a/vllm/v1/sample/metadata.py
++++ b/vllm/v1/sample/metadata.py
+@@ -42,3 +42,11 @@ class SamplingMetadata:
+ 
+     # Speculative token ids
+     spec_token_ids: list[list[int]] | None = None
++
++    # in-engine path — True if any request in the batch
++    # opted in via SamplingParams.emit_per_token_feature_seq. When set,
++    # the sampler computes [chosen_lp, max_p, neg_entropy] inline from
++    # log_softmax(logits) and emits SamplerOutput.feature_seq_tensor.
++    # Independent of max_num_logprobs so feature_seq can run without
++    # paying for gather_logprobs (topk + rank).
++    has_emit_per_token_feature_seq: bool = False
+diff --git a/vllm/v1/sample/sampler.py b/vllm/v1/sample/sampler.py
+index 3840a7068..6084cc18b 100644
+--- a/vllm/v1/sample/sampler.py
++++ b/vllm/v1/sample/sampler.py
+@@ -77,7 +77,14 @@ class Sampler(nn.Module):
+         # This is different from the V0 sampler, which uses the logits that
+         # is used for sampling (after penalties and temperature scaling).
+         num_logprobs = sampling_metadata.max_num_logprobs
+-        if num_logprobs is not None:
++        # in-engine path — when any request opts in via
++        # SamplingParams.emit_per_token_feature_seq, the sampler needs
++        # log_softmax to compute the [chosen_lp, max_p, neg_entropy]
++        # feature row, even if no driver-visible logprobs are requested.
++        needs_feature_seq = bool(
++            getattr(sampling_metadata, "has_emit_per_token_feature_seq", False)
++        )
++        if num_logprobs is not None or needs_feature_seq:
+             if logprobs_mode == "raw_logprobs":
+                 raw_logprobs = self.compute_logprobs(logits)
+             elif logprobs_mode == "raw_logits":
+@@ -102,6 +109,28 @@ class Sampler(nn.Module):
+         # return int32 (while PyTorch argmax and topk return int64).
+         sampled = sampled.long()
+ 
++        # in-engine path — compute features inline from
++        # log_softmax(logits). All reductions are vectorized over the
++        # batch dim; output is a [B, 3] tensor (chosen_lp, max_p,
++        # neg_entropy). Skips gather_logprobs entirely when only
++        # feature_seq is needed (no topk, no rank).
++        feature_seq_tensor = None
++        if needs_feature_seq:
++            # raw_logprobs is [B, V] log_softmax. sampled is [B].
++            chosen_lp = raw_logprobs.gather(
++                -1, sampled.unsqueeze(-1)
++            ).squeeze(-1)
++            max_lp = raw_logprobs.amax(dim=-1)
++            max_p = torch.exp(max_lp)
++            # Full-distribution entropy: H = -sum(p * log_p).
++            # log_p == raw_logprobs (already log_softmax).
++            p = torch.exp(raw_logprobs)
++            entropy = -(p * raw_logprobs).sum(dim=-1)
++            neg_entropy = -entropy  # higher = more confident
++            feature_seq_tensor = torch.stack(
++                [chosen_lp, max_p, neg_entropy], dim=-1
++            )  # [B, 3]
++
+         if num_logprobs is None:
+             logprobs_tensors = None
+         elif num_logprobs == -1:
+@@ -125,6 +154,7 @@ class Sampler(nn.Module):
+             # token per request.
+             sampled_token_ids=sampled.unsqueeze(-1),
+             logprobs_tensors=logprobs_tensors,
++            feature_seq_tensor=feature_seq_tensor,
+         )
+         return sampler_output
+ 
+diff --git a/vllm/v1/worker/gpu_input_batch.py b/vllm/v1/worker/gpu_input_batch.py
+index b9cd10544..726eb3f26 100644
+--- a/vllm/v1/worker/gpu_input_batch.py
++++ b/vllm/v1/worker/gpu_input_batch.py
+@@ -235,6 +235,22 @@ class InputBatch:
+ 
+         self.num_logprobs: dict[str, int] = {}
+ 
++        # in-engine path cascade-routing inline aggregate logprob
++        # stats. Set of request ids that opted in via
++        # SamplingParams.emit_aggregate_logprob_stats. gpu_model_runner
++        # updates the per-request accumulator each decode step for
++        # these requests; the 4-stat aggregate flows out via
++        # EngineCoreOutput when the request finishes. See
++        # the package README.
++        self.emit_aggregate_logprob_stats: set[str] = set()
++
++        # in-engine path per-token feature seq. Set of request ids
++        # that opted in via SamplingParams.emit_per_token_feature_seq.
++        # gpu_model_runner appends one [chosen_lp, max_p, neg_entropy]
++        # row per step for these requests; pos_frac and the [T, 4]
++        # tensor are finalized when the request finishes.
++        self.emit_per_token_feature_seq: set[str] = set()
++
+         # To accumulate prompt logprobs tensor chunks across prefill steps.
+         self.in_progress_prompt_logprobs_cpu: dict[str, LogprobsTensors] = {}
+ 
+@@ -394,6 +410,22 @@ class InputBatch:
+                     if sampling_params.logprobs == -1
+                     else sampling_params.logprobs
+                 )
++            # in-engine path — no longer force num_logprobs
++            # for feature_seq requests. The sampler now computes features
++            # directly from log_softmax (independent of gather_logprobs)
++            # so we skip the K+1 indices/logprobs path entirely when only
++            # feature_seq is needed.
++
++            # in-engine path: track per-request opt-in for inline
++            # aggregate stats. Requires logprobs >= 1 (else the sampler
++            # won't emit logprobs_tensors and the accumulator has
++            # nothing to consume).
++            if getattr(sampling_params, "emit_aggregate_logprob_stats",
++                       False):
++                self.emit_aggregate_logprob_stats.add(req_id)
++            if getattr(sampling_params, "emit_per_token_feature_seq",
++                       False):
++                self.emit_per_token_feature_seq.add(req_id)
+ 
+             if sampling_params.allowed_token_ids:
+                 self.has_allowed_token_ids.add(req_id)
+@@ -523,6 +555,8 @@ class InputBatch:
+         self.generators.pop(req_index, None)
+         self.num_logprobs.pop(req_id, None)
+         self.in_progress_prompt_logprobs_cpu.pop(req_id, None)
++        self.emit_aggregate_logprob_stats.discard(req_id)
++        self.emit_per_token_feature_seq.discard(req_id)
+         if self.prev_req_id_to_index is not None:
+             self.prev_req_id_to_index.pop(req_id, None)
+ 
+@@ -883,6 +917,10 @@ class InputBatch:
+             allowed_token_ids_mask=allowed_token_ids_mask,
+             bad_words_token_ids=self.bad_words_token_ids,
+             logitsprocs=self.logitsprocs,
++            # in-engine path
++            has_emit_per_token_feature_seq=bool(
++                self.emit_per_token_feature_seq
++            ),
+         )
+ 
+     def get_pooling_params(self) -> list[PoolingParams]:
+diff --git a/vllm/v1/worker/gpu_model_runner.py b/vllm/v1/worker/gpu_model_runner.py
+index 2e62206da..32e1356bb 100644
+--- a/vllm/v1/worker/gpu_model_runner.py
++++ b/vllm/v1/worker/gpu_model_runner.py
+@@ -227,6 +227,10 @@ class AsyncGPUModelRunnerOutput(AsyncModelRunnerOutput):
+         invalid_req_indices: list[int],
+         async_output_copy_stream: torch.cuda.Stream,
+         vocab_size: int,
++        # in-engine path V2: defer the per-token feature-seq D2H onto this same copy
++        # stream/event (one extra non-blocking copy, no extra sync).
++        pending_feature_seq=None,
++        feature_finalize_fn=None,
+     ):
+         self._model_runner_output = model_runner_output
+         self._invalid_req_indices = invalid_req_indices
+@@ -240,6 +244,18 @@ class AsyncGPUModelRunnerOutput(AsyncModelRunnerOutput):
+         self.vocab_size = vocab_size
+         self._logprobs_tensors = logprobs_tensors
+ 
++        # in-engine path V2 — feature-seq deferred copy bookkeeping.
++        self._feature_finalize_fn = feature_finalize_fn
++        self._feature_seq_meta = None
++        self._feature_seq_cpu = None
++        fs_tensor = None
++        if pending_feature_seq is not None:
++            (fs_tensor, fs_req_ids, fs_discard, fs_n, fs_emit) = (
++                pending_feature_seq
++            )
++            self._feature_seq_meta = (fs_req_ids, fs_discard, fs_n, fs_emit)
++            self._feature_seq_tensor = fs_tensor  # keep ref alive
++
+         # Initiate the copy on a separate stream, but do not synchronize it.
+         default_stream = torch.cuda.current_stream()
+         with torch.cuda.stream(async_output_copy_stream):
+@@ -252,6 +268,12 @@ class AsyncGPUModelRunnerOutput(AsyncModelRunnerOutput):
+                 if self._logprobs_tensors
+                 else None
+             )
++            if fs_tensor is not None:
++                # feature_seq_tensor is already float32 (sampler stack); the
++                # CPU read happens only after event.synchronize() in get_output.
++                self._feature_seq_cpu = fs_tensor.detach().to(
++                    "cpu", non_blocking=True
++                )
+             self.async_copy_ready_event.record()
+ 
+     def get_output(self) -> ModelRunnerOutput:
+@@ -283,6 +305,14 @@ class AsyncGPUModelRunnerOutput(AsyncModelRunnerOutput):
+         output = self._model_runner_output
+         output.sampled_token_ids = valid_sampled_token_ids
+         output.logprobs = logprobs_lists
++        # in-engine path V2 — the feature-seq D2H is now complete (same event we just
++        # synced). Append this step's rows + build the snapshot here, off the
++        # per-step critical path.
++        if self._feature_seq_cpu is not None and self._feature_finalize_fn:
++            fs_req_ids, fs_discard, fs_n, fs_emit = self._feature_seq_meta
++            output.per_token_feature_seq_running = self._feature_finalize_fn(
++                self._feature_seq_cpu, fs_req_ids, fs_discard, fs_n, fs_emit,
++            )
+         return output
+ 
+ 
+@@ -637,6 +667,23 @@ class GPUModelRunner(
+             cp_kv_cache_interleave_size=self.parallel_config.cp_kv_cache_interleave_size,
+         )
+ 
++        # in-engine path inline cascade-routing accumulator. Updated
++        # in _bookkeeping_sync each decode step for requests that opted
++        # in via SamplingParams.emit_aggregate_logprob_stats. The 4
++        # finalized stats flow out via the per-request finished-stats
++        # dict at request completion. See the package README.
++        from vllm.v1.cascade_lp_classifier import (
++            LogprobStatsAccumulator, FeatureSeqAccumulator,
++        )
++        self._lp_stats_accumulator = LogprobStatsAccumulator()
++        # Finalized stats indexed by request id; drained by the engine
++        # when constructing EngineCoreOutput.
++        self._lp_stats_finalized: dict[str, dict[str, float]] = {}
++        # in-engine path — per-token feature seq accumulator.
++        # Same lifecycle as the aggregate one, but per-step rows live
++        # in PerRequestFeatureSeq lists instead of running sums.
++        self._lp_feature_seq_accumulator = FeatureSeqAccumulator()
++
+         # Separate cuda stream for overlapping transfer of sampled token ids from
+         # GPU to CPU when async scheduling is enabled.
+         self.async_output_copy_stream: torch.cuda.Stream | None = None
+@@ -3346,6 +3393,150 @@ class GPUModelRunner(
+         )
+         return sampler_output
+ 
++    def _update_lp_stats_accumulator_step(
++        self,
++        logprobs_tensors: "LogprobsTensors",
++        num_sampled_tokens: int,
++        discard_indices: np.ndarray,
++    ) -> None:
++        """in-engine path per-step accumulator update.
++
++        For each opted-in request that produced a valid sampled token
++        this step, update the per-request running stats with the
++        chosen-token logprob and the step's top-K logprobs.
++        """
++        # CPU sync at this point is a real cost. We pay it because the
++        # accumulator state is per-request and tiny — alternative is
++        # per-engine GPU buffers indexed by req_idx with a single async
++        # copy per step. That's the next optimization; for correctness
++        # we do per-step CPU sync first.
++        # The logprobs row layout from
++        # Sampler.gather_logprobs is [chosen_lp, top1_lp, ..., topK_lp].
++        # Bookkeeping runs on TP rank 0 only (the rank that constructs
++        # the ModelRunnerOutput consumed by the scheduler). Other ranks
++        # do not need to populate the accumulator. The early-return is
++        # explicit below.
++        if get_tp_group().rank_in_group != 0:
++            return
++        lp = logprobs_tensors.logprobs  # [num_sampled_tokens, K+1]
++        discard_set = set(discard_indices.tolist())
++        req_ids = self.input_batch.req_ids
++        opted_in_agg = self.input_batch.emit_aggregate_logprob_stats
++        # Synchronous CPU copy — non_blocking races with downstream
++        # reads of lp_cpu. The 4xA10G validation showed garbage values
++        # (e.g. 1.4e-40, denormalized floats from uninitialized memory)
++        # when this was non_blocking.
++        lp_cpu = lp.detach().to("cpu").float()
++        # max-prob across the top-K row tells us whether this row was
++        # actually written by the sampler. For a prefilling request
++        # with no sample yet, the row is uninitialized memory —
++        # typically denormal floats with sum well below 0.5. A real
++        # softmax row has sum ≈ 1.0 (modulo tail truncation), so any
++        # row with sum < 0.01 is junk and we skip it.
++        row_sum_prob = torch.exp(lp_cpu).sum(dim=1)
++        for req_idx in range(num_sampled_tokens):
++            if req_idx in discard_set:
++                continue
++            req_id = req_ids[req_idx]
++            if req_id not in opted_in_agg:
++                continue
++            if float(row_sum_prob[req_idx]) < 0.01:
++                continue
++            chosen_lp = float(lp_cpu[req_idx, 0])
++            topk_lp = lp_cpu[req_idx, 1:]  # [K]
++            self._lp_stats_accumulator.register_request(req_id)
++            self._lp_stats_accumulator.update(
++                req_id, chosen_lp, topk_lp,
++            )
++
++    def _update_feature_seq_accumulator_step(
++        self,
++        feature_seq_tensor: torch.Tensor,  # [num_sampled_tokens, 3]
++        num_sampled_tokens: int,
++        discard_indices: np.ndarray,
++    ) -> None:
++        """in-engine path — append per-step feature row to per-request
++        FeatureSeqAccumulator. The row is (chosen_lp, max_p, neg_entropy),
++        already computed on GPU by the sampler. CPU side just does a
++        small [num_sampled_tokens, 3] copy and 3-float-per-req append —
++        no torch.exp/log/sum work (that's all on GPU now)."""
++        from vllm.distributed.parallel_state import get_tp_group
++        if get_tp_group().rank_in_group != 0:
++            return
++        opted_in_seq = self.input_batch.emit_per_token_feature_seq
++        if not opted_in_seq:
++            return
++        discard_set = set(discard_indices.tolist())
++        req_ids = self.input_batch.req_ids
++        # Synchronous CPU copy of the small [N, 3] tensor.
++        fs_cpu = feature_seq_tensor.detach().to("cpu").float()
++        # A degenerate row (e.g. uninitialized for a prefilling request)
++        # has chosen_lp == 0 and max_p == 1 == neg_entropy == 0. The
++        # cheapest guard is checking max_p is in (0, 1.001].
++        max_ps = fs_cpu[:, 1]
++        for req_idx in range(num_sampled_tokens):
++            if req_idx in discard_set:
++                continue
++            req_id = req_ids[req_idx]
++            if req_id not in opted_in_seq:
++                continue
++            mp = float(max_ps[req_idx])
++            if mp <= 0.0 or mp > 1.001:
++                continue
++            self._lp_feature_seq_accumulator.register_request(req_id)
++            # Skip the existing update_from_step (which does torch.exp +
++            # entropy compute on CPU). Append the pre-computed row
++            # directly.
++            st = self._lp_feature_seq_accumulator._state[req_id]
++            st.chosen_lp.append(float(fs_cpu[req_idx, 0]))
++            st.max_p.append(mp)
++            st.neg_entropy.append(float(fs_cpu[req_idx, 2]))
++
++    def _finalize_feature_seq_async(
++        self,
++        fs_cpu: torch.Tensor,          # already on CPU (copied on the async
++                                       # output stream; event synced upstream)
++        req_ids: list[str],
++        discard_set: set[int],
++        num_sampled_tokens: int,
++        emit_set,
++    ) -> dict | None:
++        """in-engine path V2 — deferred feature-seq finalize, run in
++        AsyncGPUModelRunnerOutput.get_output() AFTER the single async-copy
++        event.synchronize() (so NO extra per-step sync). Appends this step's
++        rows to the per-request accumulator and returns the cumulative
++        snapshot dict for ModelRunnerOutput.per_token_feature_seq_running.
++        Bit-identical to the eager path; only the COPY moved off the
++        critical path."""
++        max_ps = fs_cpu[:, 1]
++        for req_idx in range(num_sampled_tokens):
++            if req_idx in discard_set:
++                continue
++            req_id = req_ids[req_idx]
++            if req_id not in emit_set:
++                continue
++            mp = float(max_ps[req_idx])
++            if mp <= 0.0 or mp > 1.001:
++                continue
++            self._lp_feature_seq_accumulator.register_request(req_id)
++            st = self._lp_feature_seq_accumulator._state[req_id]
++            st.chosen_lp.append(float(fs_cpu[req_idx, 0]))
++            st.max_p.append(mp)
++            st.neg_entropy.append(float(fs_cpu[req_idx, 2]))
++        # Build the cumulative snapshot (same shape as the eager path).
++        fs_state = self._lp_feature_seq_accumulator._state
++        feat_seq: dict = {}
++        for rid in emit_set:
++            fs = fs_state.get(rid)
++            if fs is None or not fs.chosen_lp:
++                continue
++            feat_seq[rid] = (
++                list(fs.chosen_lp),
++                list(fs.max_p),
++                list(fs.neg_entropy),
++            )
++        return feat_seq or None
++
+     def _bookkeeping_sync(
+         self,
+         scheduler_output: "SchedulerOutput",
+@@ -3385,6 +3576,58 @@ class GPUModelRunner(
+         sampled_token_ids = sampler_output.sampled_token_ids
+         logprobs_tensors = sampler_output.logprobs_tensors
+         invalid_req_indices = []
++
++        # in-engine path: per-step inline accumulator update.
++        # Layout of logprobs_tensors (vllm/v1/sample/sampler.py):
++        #   logprobs[row, 0]    = chosen-token logprob at this step
++        #   logprobs[row, 1:K+1] = top-K logprobs (sorted desc)
++        # For max_gen_len==1 (no spec decode) row == req_idx in
++        # input_batch. We skip the spec-decode case for now — the offline head
++        # cascade routing doesn't use spec decode at the draft tier.
++        if (
++            logprobs_tensors is not None
++            and self.input_batch.emit_aggregate_logprob_stats
++            and sampled_token_ids.shape[-1] == 1
++        ):
++            self._update_lp_stats_accumulator_step(
++                logprobs_tensors, num_sampled_tokens,
++                discard_sampled_tokens_req_indices,
++            )
++        # in-engine path — feature_seq accumulator consumes the new
++        # GPU-side [N, 3] tensor (chosen_lp, max_p, neg_entropy)
++        # produced inline by the sampler, independent of
++        # logprobs_tensors.
++        fs_tensor = getattr(sampler_output, "feature_seq_tensor", None)
++        # in-engine path V2 (async-copy): the per-step blocking `.to("cpu")` of the
++        # feature rows was the dominant in-engine head overhead (~33% of
++        # worker wall, py-spy in-engine path STEP 2) — a hard sync that stalls the
++        # async-scheduling pipeline every decode step. In async mode we
++        # DEFER the D2H onto the existing async-output copy stream + event
++        # (one extra non-blocking copy, ZERO extra syncs) and run the CPU
++        # append + snapshot in AsyncGPUModelRunnerOutput.get_output(), after
++        # the single event.synchronize() that already gates the token copy.
++        # Bit-identical to the eager path (proven by the in-engine path quality gate).
++        self._pending_feature_seq = None
++        from vllm.distributed.parallel_state import get_tp_group as _get_tp
++        if (
++            fs_tensor is not None
++            and self.input_batch.emit_per_token_feature_seq
++            and sampled_token_ids.shape[-1] == 1
++            and _get_tp().rank_in_group == 0   # accumulation is rank-0 only
++        ):
++            if self.use_async_scheduling:
++                self._pending_feature_seq = (
++                    fs_tensor,
++                    list(self.input_batch.req_ids),
++                    set(discard_sampled_tokens_req_indices.tolist()),
++                    int(num_sampled_tokens),
++                    frozenset(self.input_batch.emit_per_token_feature_seq),
++                )
++            else:
++                self._update_feature_seq_accumulator_step(
++                    fs_tensor, num_sampled_tokens,
++                    discard_sampled_tokens_req_indices,
++                )
+         logprobs_lists = None
+         if not self.use_async_scheduling:
+             # Get the valid generated tokens.
+@@ -4314,6 +4557,54 @@ class GPUModelRunner(
+                 else:
+                     logger.error("RoutedExpertsCapturer not initialized.")
+ 
++            # in-engine path: snapshot the running accumulator
++            # state for opted-in requests so the scheduler can plumb
++            # them through EngineCoreOutput. Cheap (5 floats per req).
++            agg_lp = None
++            if self.input_batch.emit_aggregate_logprob_stats:
++                agg_lp = {}
++                # pylint: disable=protected-access
++                state_dict = self._lp_stats_accumulator._state
++                for rid in self.input_batch.emit_aggregate_logprob_stats:
++                    st = state_dict.get(rid)
++                    if st is None or st.n_steps == 0:
++                        continue
++                    agg_lp[rid] = (
++                        st.sum_chosen_logprob,
++                        st.min_chosen_logprob,
++                        st.sum_max_prob,
++                        st.sum_neg_entropy,
++                        st.n_steps,
++                    )
++
++            # in-engine path: snapshot the per-token feature-seq
++            # accumulator state for opted-in requests. Per request we
++            # ship 3×T floats (chosen_lp, max_p, neg_entropy lists);
++            # pos_frac is computed at engine finalization since it
++            # depends on the final T. List-of-list to keep the IPC
++            # path msgspec-friendly.
++            # in-engine path V2 (async-copy): in async mode the accumulator has NOT
++            # been updated for this step yet (the D2H is deferred to the
++            # copy stream); the snapshot is built in get_output() after the
++            # event sync. Skip here. In sync mode, build it eagerly as before.
++            feat_seq = None
++            if (
++                not self.use_async_scheduling
++                and self.input_batch.emit_per_token_feature_seq
++            ):
++                feat_seq = {}
++                # pylint: disable=protected-access
++                fs_state = self._lp_feature_seq_accumulator._state
++                for rid in self.input_batch.emit_per_token_feature_seq:
++                    fs = fs_state.get(rid)
++                    if fs is None or not fs.chosen_lp:
++                        continue
++                    feat_seq[rid] = (
++                        list(fs.chosen_lp),
++                        list(fs.max_p),
++                        list(fs.neg_entropy),
++                    )
++
+             output = ModelRunnerOutput(
+                 req_ids=req_ids_output_copy,
+                 req_id_to_index=req_id_to_index_output_copy,
+@@ -4325,6 +4616,8 @@ class GPUModelRunner(
+                 if self.supports_mm_inputs
+                 else None,
+                 num_nans_in_logits=num_nans_in_logits,
++                aggregate_lp_stats_running=agg_lp,
++                per_token_feature_seq_running=feat_seq,
+                 cudagraph_stats=cudagraph_stats,
+             )
+ 
+@@ -4341,6 +4634,9 @@ class GPUModelRunner(
+                 invalid_req_indices=invalid_req_indices,
+                 async_output_copy_stream=self.async_output_copy_stream,
+                 vocab_size=self.input_batch.vocab_size,
++                # in-engine path V2: defer the feature-seq D2H onto the copy stream.
++                pending_feature_seq=self._pending_feature_seq,
++                feature_finalize_fn=self._finalize_feature_seq_async,
+             )
+         with record_function_or_nullcontext(
+             "gpu_model_runner: set_async_sampled_token_ids"

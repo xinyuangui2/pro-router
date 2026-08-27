@@ -1,0 +1,53 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "Pro-Router"
+abstract: >-
+  Reference implementation of Pro-Router: a token-aware progressive model
+  routing method with an adaptive edge-cloud serving pipeline for efficient
+  multimodal LLM inference.
+license: Apache-2.0
+repository-code: "https://github.com/xinyuangui2/pro-router"
+authors:
+  - family-names: Gui
+    given-names: Xinyuan
+    affiliation: Anyscale
+  - family-names: Wang
+    given-names: Shaowen
+    affiliation: "Department of Computer Science and Engineering, Mississippi State University"
+  - family-names: Sun
+    given-names: Sheng
+    affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"
+  - family-names: Wang
+    given-names: Zijian
+    affiliation: "Institute of AI for Industries, Chinese Academy of Sciences"
+  - family-names: Yu
+    given-names: Zishu
+    affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"
+  - family-names: Yang
+    given-names: Zheming
+    affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"
+preferred-citation:
+  type: article
+  title: >-
+    Pro-Router: Token-Aware Progressive Model Routing with Adaptive Edge-Cloud
+    Collaboration for Efficient Multimodal LLM Inference
+  year: 2026
+  authors:
+    - family-names: Gui
+      given-names: Xinyuan
+      affiliation: Anyscale
+    - family-names: Wang
+      given-names: Shaowen
+      affiliation: "Department of Computer Science and Engineering, Mississippi State University"
+    - family-names: Sun
+      given-names: Sheng
+      affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"
+    - family-names: Wang
+      given-names: Zijian
+      affiliation: "Institute of AI for Industries, Chinese Academy of Sciences"
+    - family-names: Yu
+      given-names: Zishu
+      affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"
+    - family-names: Yang
+      given-names: Zheming
+      affiliation: "Institute of Computing Technology, Chinese Academy of Sciences"

@@ -1,0 +1,5464 @@
+{
+ "_note": "Record manifest for the 5-source VLM benchmark mix used in the paper. Each entry is the dataset-native id; build_records.py resolves these against the public HuggingFace datasets listed in SOURCES.",
+ "sources": [
+  "chartqa",
+  "docvqa",
+  "mathvista",
+  "mmbench",
+  "mmmu"
+ ],
+ "splits": {
+  "val": 679,
+  "test": 682
+ },
+ "records": {
+  "val": [
+   {
+    "id": "validation_Manage_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_193",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_589",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_124",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_285",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_353",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1251",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1552",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_667",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Geography_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_Theory_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_568",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Public_Health_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1112",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_496",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_212",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Design_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_672",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1557",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Physics_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Geography_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1547",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Economics_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_374",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_863",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1108",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1012",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_632",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_457",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Geography_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_309",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1109",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Geography_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_364",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Marketing_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_214",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Literature_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_607",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_329",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_570",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Geography_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1231",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Public_Health_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_486",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_548",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_95",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Economics_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_664",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_695",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_685",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1124",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_675",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1268",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_118",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1544",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_485",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_648",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Accounting_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1210",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Psychology_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_18",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_306",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Finance_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_292",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_121",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1276",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Literature_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_Theory_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_67",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_346",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_241",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Agriculture_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1256",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Biology_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_508",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_419",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_History_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_588",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Geography_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_72",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_633",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_302",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_858",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_438",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_355",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_86",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Accounting_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_560",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Finance_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_605",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Materials_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_610",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_184",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_622",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_164",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_462",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_665",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_History_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_162",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Literature_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_97",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_550",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_352",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_216",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Design_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_288",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Electronics_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_73",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1205",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_505",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_668",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Literature_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1548",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_Theory_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_Theory_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1277",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_158",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Geography_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_693",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1118",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Finance_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1114",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_445",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Public_Health_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_Theory_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Math_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_615",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Math_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_History_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_406",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Physics_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_345",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_92",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_274",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_654",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1549",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Accounting_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1235",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_Theory_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_155",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_290",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Agriculture_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_587",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_565",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Finance_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "docvqa_57904",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_34",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49297",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49465",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_58108",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_226",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_486",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_489",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57374",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_236",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_255",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49583",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32878",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_203",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_41723",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_431",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_2",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57838",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_58056",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_60403",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_41716",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_195",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_17002",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_304",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57416",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_322",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_47",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57886",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_421",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_678",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57395",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_435",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_416",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_41695",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_48",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_148",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57770",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_17000",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32891",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_792",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_234",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_254",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49373",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_410",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57539",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_284",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_361",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_57",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_335",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_456",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49400",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_59",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16999",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_89",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_418",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_117",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_453",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_599",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_24437",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_481",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_463",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_49",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57978",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_139",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_444",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_401",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_29",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_91",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57989",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_786",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32893",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_180",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_32994",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_407",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_58009",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_455",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_32900",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_496",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_178",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57526",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_16529",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_18",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_458",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_487",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_331",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57475",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57782",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57952",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_376",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_39079",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57440",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_237",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_480",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_133",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57357",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_380",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49617",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49263",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_235",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16832",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_265",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57833",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57931",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_427",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49574",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_298",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_394",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_93",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_224",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57428",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57883",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_351",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_398",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_103",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_316",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57373",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_407",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_147",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57786",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_359",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49454",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_141",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_364",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_168",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49455",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_396",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_32881",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_32",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_115",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_465",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_119",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57975",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_359",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57976",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49550",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_50",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16574",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49394",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_390",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16437",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_33158",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_81",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57820",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_101",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_216",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_317",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_67",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_271",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_42",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57987",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_210",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_396",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57431",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_176",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49432",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_186",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_24582",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_58064",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57853",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_393",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49366",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49168",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_424",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_349",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_177",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57415",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_162",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_69",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_248",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57882",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57885",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_105",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_135",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_423",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_420",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49406",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_28",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_99",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_282",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57529",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_257",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_229",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_150",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_24499",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_345",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_291",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57823",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49397",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57881",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_369",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_809",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_372",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_185",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_461",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_319",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_450",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49391",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57413",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_822",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_16789",
+    "source": "docvqa"
+   },
+   {
+    "id": "mathvista_9",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_835",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_492",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_674",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_775",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_725",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_992",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_777",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_703",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_457",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_103",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_932",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_781",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_504",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_579",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_814",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_861",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_587",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_414",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_851",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_503",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_348",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_655",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_519",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_875",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_570",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_900",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_172",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_313",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_985",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_331",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_180",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_961",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_338",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_78",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_477",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_666",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_989",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_366",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_269",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_332",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_580",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_323",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_857",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_39",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_667",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_239",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_425",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_458",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_71",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_91",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_30",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_731",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_874",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_385",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_191",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_864",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_297",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_455",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_514",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_511",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_279",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_762",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_487",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_697",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_113",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_417",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_620",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_796",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_423",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_387",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_166",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_340",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_179",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_962",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_722",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_795",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_273",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_973",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_632",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_554",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_735",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_516",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_130",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_701",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_421",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_84",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_444",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_694",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_186",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_727",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_755",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_298",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_440",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_791",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_119",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_799",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_308",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_956",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_705",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_949",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_461",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_702",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_350",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_908",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_252",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_953",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_449",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_863",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_865",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_981",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_790",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_33",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_968",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_108",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_86",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_963",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_34",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_834",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_804",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_584",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_174",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_991",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_397",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_692",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_523",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_126",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_320",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_419",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_391",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_141",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_909",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_361",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_393",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_152",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_561",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_18",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_675",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_221",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_285",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_170",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_610",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_450",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_367",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_271",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_65",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_260",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_394",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_971",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_719",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_726",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_567",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_621",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_266",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_828",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_747",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_714",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_815",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_745",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_977",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_901",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_116",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_628",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_117",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_429",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_187",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_156",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_363",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_891",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_505",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_233",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_611",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_636",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_882",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_153",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_867",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_619",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_934",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_578",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_314",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_406",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_282",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_678",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_937",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_944",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_710",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_672",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_303",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_405",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_787",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_401",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_67",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_535",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_846",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_945",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_223",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_754",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_319",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_295",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_774",
+    "source": "mathvista"
+   }
+  ],
+  "test": [
+   {
+    "id": "mmbench_428",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_34",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_64",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Chemistry_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_100",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1116",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_498",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Public_Health_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_126",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Economics_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Pharmacy_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1096",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_382",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_403",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_461",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1248",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_424",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1129",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Chemistry_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_591",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_228",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Chemistry_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_517",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_307",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_12",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1204",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1088",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_494",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1213",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_833",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Literature_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_89",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_153",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1122",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_626",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Economics_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1195",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1253",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Music_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_348",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_702",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1102",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_51",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_45",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1198",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Music_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1569",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Geography_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Clinical_Medicine_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Computer_Science_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1121",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_75",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Literature_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_416",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1137",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Psychology_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_482",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_389",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Clinical_Medicine_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_138",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Physics_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Sociology_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_471",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Economics_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_846",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_270",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Manage_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Pharmacy_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_526",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_359",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_349",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Psychology_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Art_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_252",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_139",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1566",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Design_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1107",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_3",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1125",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_History_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_585",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Music_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_231",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Agriculture_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_28",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Music_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_487",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_323",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Computer_Science_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_465",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1554",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_197",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_507",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_620",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_673",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Chemistry_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Diagnostics_and_Laboratory_Medicine_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1257",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_427",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_11",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_108",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_404",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_609",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Energy_and_Power_24",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Finance_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1244",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Agriculture_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Public_Health_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_12",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Agriculture_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_History_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_608",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_330",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_454",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Pharmacy_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_694",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Design_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_236",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1224",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Finance_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_512",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_592",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Geography_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Mechanical_Engineering_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Marketing_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1092",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_316",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_407",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Accounting_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_687",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_70",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_13",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_27",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Economics_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_478",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Art_Theory_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Psychology_2",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Electronics_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Pharmacy_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_6",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_15",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_99",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Design_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_449",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_History_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_466",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Marketing_5",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_597",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_16",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Materials_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1201",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Marketing_29",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_555",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Marketing_18",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_261",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_1234",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Biology_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Pharmacy_7",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_657",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_586",
+    "source": "mmbench"
+   },
+   {
+    "id": "mmbench_112",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Architecture_and_Engineering_14",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_284",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Sociology_8",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_9",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Design_1",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Accounting_30",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_506",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Math_20",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Energy_and_Power_21",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Manage_19",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_477",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Physics_23",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Chemistry_22",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_1215",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Psychology_10",
+    "source": "mmmu"
+   },
+   {
+    "id": "mmbench_705",
+    "source": "mmbench"
+   },
+   {
+    "id": "validation_Materials_4",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Physics_17",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Basic_Medical_Science_26",
+    "source": "mmmu"
+   },
+   {
+    "id": "validation_Biology_25",
+    "source": "mmmu"
+   },
+   {
+    "id": "docvqa_57808",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57890",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_200",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_66",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_27",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_32890",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49442",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_197",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_329",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_60407",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_370",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_413",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_583",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_171",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_454",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_123",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_249",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_41691",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_267",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57733",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_425",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_410",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57476",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_138",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_294",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_597",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_490",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_47368",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_462",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_281",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57933",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_404",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_263",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_340",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_60406",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_345",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57532",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_149",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57537",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57791",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_324",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_35",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_20",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_468",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_38",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_356",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_234",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_342",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57801",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_190",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_826",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49323",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49437",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_782",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_72",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_581",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_408",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57807",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_64",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_24440",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_8",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_347",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_113",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_24505",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_25396",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_794",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_371",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57543",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49569",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_789",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57822",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_51",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_358",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_98",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_475",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16539",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57376",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49392",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57884",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_790",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_165",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_179",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_403",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49605",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_389",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_43",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_312",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16981",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_367",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_6",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57888",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_375",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_430",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_321",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57566",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_58059",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_54",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16456",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57815",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_41728",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_175",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_365",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57452",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_17147",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_58",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49361",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_497",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_484",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57880",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57798",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_613",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_5",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_10",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_45745",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_220",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49325",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32986",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_144",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_223",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_114",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_493",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_343",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_364",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_96",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_793",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_677",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_159",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_266",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57523",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_375",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_152",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_301",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_471",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57971",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_4931",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_361",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_160",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_406",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57517",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_16611",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_296",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49565",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_16450",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_58007",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_145",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_259",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57841",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_824",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_432",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57934",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_8565",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_181",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_292",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_56",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57557",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57974",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_417",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_58061",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_477",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_153",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_323",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_283",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_16830",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32995",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32989",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_125",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57449",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_63",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_320",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_247",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_611",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_49403",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_217",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_24581",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_434",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57837",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_219",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_674",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_362",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_49376",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_109",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57387",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_314",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_461",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_254",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_306",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_440",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_250",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_199",
+    "source": "chartqa"
+   },
+   {
+    "id": "chartqa_271",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_57889",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_344",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_651",
+    "source": "docvqa"
+   },
+   {
+    "id": "chartqa_397",
+    "source": "chartqa"
+   },
+   {
+    "id": "docvqa_450",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57955",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57528",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57767",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57902",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_57388",
+    "source": "docvqa"
+   },
+   {
+    "id": "docvqa_32871",
+    "source": "docvqa"
+   },
+   {
+    "id": "mathvista_748",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_548",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_55",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_581",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_100",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_125",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_753",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_805",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_357",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_31",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_300",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_478",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_943",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_821",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_758",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_41",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_82",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_649",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_430",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_545",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_2",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_248",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_642",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_145",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_424",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_137",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_219",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_453",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_820",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_158",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_665",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_884",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_593",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_107",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_905",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_850",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_479",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_740",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_211",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_462",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_379",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_79",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_711",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_635",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_706",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_518",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_389",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_402",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_463",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_176",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_880",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_214",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_381",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_96",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_842",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_756",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_801",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_326",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_159",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_446",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_384",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_508",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_380",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_959",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_982",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_947",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_541",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_434",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_249",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_922",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_68",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_586",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_608",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_640",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_377",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_93",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_321",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_663",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_656",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_388",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_562",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_507",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_264",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_885",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_132",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_852",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_926",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_270",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_278",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_311",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_464",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_899",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_46",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_183",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_713",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_382",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_163",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_782",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_594",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_89",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_543",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_652",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_454",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_506",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_178",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_927",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_664",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_904",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_212",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_681",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_704",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_16",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_532",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_352",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_778",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_670",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_23",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_415",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_687",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_122",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_135",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_661",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_598",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_427",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_993",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_823",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_47",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_400",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_97",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_496",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_515",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_952",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_979",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_473",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_733",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_980",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_633",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_292",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_213",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_557",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_555",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_81",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_588",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_245",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_493",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_1000",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_162",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_689",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_12",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_818",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_780",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_261",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_539",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_66",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_501",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_849",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_712",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_549",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_133",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_718",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_551",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_607",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_165",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_470",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_364",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_844",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_941",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_869",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_798",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_422",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_708",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_783",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_325",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_58",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_559",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_265",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_37",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_862",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_329",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_25",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_262",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_255",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_615",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_622",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_72",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_721",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_143",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_563",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_836",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_291",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_56",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_445",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_40",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_148",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_349",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_919",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_764",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_177",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_946",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_789",
+    "source": "mathvista"
+   },
+   {
+    "id": "mathvista_520",
+    "source": "mathvista"
+   }
+  ]
+ }
+}
